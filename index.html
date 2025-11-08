@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cijfers Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #121212;
+            color: #f1f1f1;
+            padding: 50px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #1f1f1f;
+            padding: 20px 40px;
+            text-align: center;
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #fff;
+            letter-spacing: 1px;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            color: #ccc;
+            padding: 12px 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        nav button:hover,
+        nav button.active {
+            color: #fff;
+            background-color: #333;
+        }
+
+        .tab {
+            display: none;
+            animation: fadeIn 0.5s ease;
+            width: 100%;
+            max-width: 900px;
+            background-color: #222;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 60px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+            font-size: 1.1em;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+            font-weight: normal;
+        }
+
+        tr:nth-child(even) {
+            background-color: #333;
+        }
+
+        .score {
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 8px;
+            display: inline-block;
+            text-align: center;
+            min-width: 50px;
+            color: white;
+        }
+
+        .rood {
+            background-color: #e57373;
+            color: #fff;
+        }
+
+        .geel {
+            background-color: #fff176;
+            color: #000;
+        }
+
+        .groen {
+            background-color: #81c784;
+            color: #fff;
+        }
+
+        /* Graph container */
+        .chart-container {
+            width: 100%;
+            max-width: 900px;
+            height: 400px;
+            margin: 40px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+            background-color: #222;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+            border-radius: 12px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            header {
+                font-size: 2em;
+                padding: 20px;
+            }
+
+            nav button {
+                padding: 12px 20px;
+                font-size: 1em;
+            }
+
+            table th,
+            table td {
+                font-size: 1em;
+            }
+
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>Cijfers Dashboard</header>
+
+    <nav>
+        <button class="tablink active" onclick="openTab('home')">Home</button>
+        <button class="tablink" onclick="openTab('gemiddelde')">Gemiddelde</button>
+        <button class="tablink" onclick="openTab('statistieken')">Statistieken</button>
+    </nav>
+
+    <div id="home" class="tab" style="display:block;">
+        <h2>Alle cijfers</h2>
+        <table id="gradeTable">
+            <thead>
+                <tr>
+                    <th>Vak</th>
+                    <th>Datum</th>
+                    <th>Cijfer</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div id="gemiddelde" class="tab">
+        <h2>Gemiddelde per vak</h2>
+        <table id="averageTable">
+            <thead>
+                <tr>
+                    <th>Vak</th>
+                    <th>Gemiddelde</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div id="statistieken" class="tab">
+        <h2>Grafiek: Gemiddelde per vak</h2>
+        <div class="chart-container">
+            <canvas id="avgChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const cijfers = {
+            "Duitse taal": [
+                { datum: "7 nov", cijfer: 10.0 },
+                { datum: "10 okt", cijfer: 4.3 },
+                { datum: "29 sep", cijfer: 8.3 }
+            ],
+            "Muziek": [
+                { datum: "4 nov", cijfer: 7.8 }
+            ],
+            "Franse taal": [
+                { datum: "30 okt", cijfer: 7.3 },
+                { datum: "21 okt", cijfer: 7.4 }
+            ],
+            "Engelse taal": [
+                { datum: "22 okt", cijfer: 7.0 }
+            ],
+            "Economie": [
+                { datum: "22 okt", cijfer: 5.7 },
+                { datum: "20 okt", cijfer: 5.0 }
+            ],
+            "Nederlandse taal": [
+                { datum: "21 okt", cijfer: 6.6 },
+                { datum: "29 sep", cijfer: 7.5 }
+            ],
+            "Tekenen": [
+                { datum: "21 okt", cijfer: 7.0 }
+            ],
+            "Biologie": [
+                { datum: "19 okt", cijfer: 6.8 }
+            ],
+            "Aardrijkskunde": [
+                { datum: "14 okt", cijfer: 6.5 },
+                { datum: "30 sep", cijfer: 6.0 }
+            ],
+            "Wiskunde": [
+                { datum: "8 okt", cijfer: 5.9 }
+            ],
+            "Geschiedenis": [
+                { datum: "7 okt", cijfer: 6.9 }
+            ]
+        };
+
+        const maandNamen = {
+            jan: 0, feb: 1, mrt: 2, apr: 3, mei: 4, jun: 5,
+            jul: 6, aug: 7, sep: 8, okt: 9, nov: 10, dec: 11
+        };
+
+        function parseDate(dateString) {
+            const [day, maand] = dateString.split(' ');
+            const maandNum = maandNamen[maand.toLowerCase().slice(0, 3)];
+            return new Date(2025, maandNum, parseInt(day));
+        }
+
+        function getColorClass(score) {
+            if (score < 5.5) return "rood";
+            if (score < 6.0) return "geel";
+            return "groen";
+        }
+
+        function renderGrades() {
+            // Collect all grades in one array
+            const allGrades = [];
+            for (let vak in cijfers) {
+                cijfers[vak].forEach(item => {
+                    allGrades.push({ vak: vak, datum: item.datum, cijfer: item.cijfer });
+                });
+            }
+
+            // Sort by date (old to new)
+            allGrades.sort((a, b) => parseDate(a.datum) - parseDate(b.datum));
+
+            // Fill the table
+            const tbody = document.querySelector("#gradeTable tbody");
+            tbody.innerHTML = "";
+            allGrades.forEach(item => {
+                tbody.innerHTML += `
+                <tr>
+                    <td>${item.vak}</td>
+                    <td>${item.datum}</td>
+                    <td><span class="score ${getColorClass(item.cijfer)}">${item.cijfer}</span></td>
+                </tr>`;
+            });
+        }
+
+        // Specific averages for each subject
+        const specificAverages = {
+            "Aardrijkskunde": 6.3, "Biologie": 6.8, "Duitse taal": 6.7,
+            "Economie": 5.5, "Engelse taal": 7.0, "Franse taal": 7.3,
+            "Geschiedenis": 6.9, "Muziek": 7.8, "Nederlandse taal": 6.9,
+            "Tekenen": 8.0, "Wiskunde": 5.9
+        };
+
+        function renderAverages() {
+            const tbody = document.querySelector("#averageTable tbody");
+            tbody.innerHTML = "";
+            for (let vak in specificAverages) {
+                const avg = specificAverages[vak].toFixed(1); // Round to 1 decimal
+                tbody.innerHTML += `
+                <tr>
+                    <td>${vak}</td>
+                    <td><span class="score ${getColorClass(avg)}">${avg}</span></td>
+                </tr>`;
+            }
+        }
+
+        function renderChart() {
+            const ctx = document.getElementById('avgChart').getContext('2d');
+            const labels = Object.keys(specificAverages);
+            const averages = labels.map(vak => specificAverages[vak].toFixed(1));
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Gemiddelde per vak',
+                        data: averages,
+                        backgroundColor: averages.map(a => a < 5.5 ? '#e57373' : (a < 6 ? '#fff176' : '#81c784')),
+                        borderColor: averages.map(a => a < 5.5 ? '#b71c1c' : (a < 6 ? '#fbc02d' : '#388e3c')),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeInOutQuart',
+                        onComplete: function () {
+                            const chartInstance = this.chart;
+                            const ctx = chartInstance.ctx;
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'bottom';
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                font: {
+                                    size: 14
+                                },
+                                padding: 15
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                beginAtZero: true,
+                                font: {
+                                    size: 14
+                                },
+                                padding: 15
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Tab navigation function
+        function openTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.style.display = 'none');
+            document.querySelectorAll('.tablink').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabName).style.display = 'block';
+            document.querySelector(`button[onclick="openTab('${tabName}')"]`).classList.add('active');
+            if (tabName === 'statistieken') renderChart();
+        }
+
+        // Start rendering
+        renderGrades();
+        renderAverages();
+    </script>
+</body>
+
+</html>
