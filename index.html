@@ -301,8 +301,8 @@
                 });
             }
 
-            // Sort by date (old to new)
-            allGrades.sort((a, b) => parseDate(a.datum) - parseDate(b.datum));
+            // Sort by date (newest to oldest)
+            allGrades.sort((a, b) => parseDate(b.datum) - parseDate(a.datum));
 
             // Fill the table
             const tbody = document.querySelector("#gradeTable tbody");
@@ -317,7 +317,6 @@
             });
         }
 
-        // Specific averages for each subject
         const specificAverages = {
             "Aardrijkskunde": 6.3, "Biologie": 6.8, "Duitse taal": 6.7,
             "Economie": 5.5, "Engelse taal": 7.0, "Franse taal": 7.3,
@@ -390,7 +389,6 @@
             });
         }
 
-        // Tab navigation function
         function openTab(tabName) {
             document.querySelectorAll('.tab').forEach(tab => tab.style.display = 'none');
             document.querySelectorAll('.tablink').forEach(btn => btn.classList.remove('active'));
@@ -403,6 +401,7 @@
         renderGrades();
         renderAverages();
     </script>
+
 </body>
 
 </html>
