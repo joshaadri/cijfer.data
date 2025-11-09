@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cijfers Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
-        /* General Styles */
+        /* ---------------------- GLOBAL ---------------------- */
         * {
             margin: 0;
             padding: 0;
@@ -15,10 +16,10 @@
         }
 
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: #121212;
-            color: #f1f1f1;
-            padding: 50px 20px;
+            font-family: "Inter", Arial, sans-serif;
+            background-color: #0e0e0e;
+            color: #e5e5e5;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -26,18 +27,16 @@
         }
 
         header {
-            background-color: #1f1f1f;
-            padding: 20px 40px;
-            text-align: center;
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #fff;
+            background: linear-gradient(145deg, #1a1a1a, #101010);
+            padding: 25px 50px;
+            font-size: 2.7em;
+            color: white;
+            border-radius: 20px;
+            font-weight: 700;
             letter-spacing: 1px;
-            border-radius: 12px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            margin-bottom: 40px;
-            width: 100%;
-            max-width: 900px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.45);
+            margin-bottom: 45px;
         }
 
         nav {
@@ -48,33 +47,33 @@
         }
 
         nav button {
-            background: none;
-            border: none;
+            background-color: #1a1a1a;
+            border: 1px solid #333;
             color: #ccc;
-            padding: 12px 25px;
+            padding: 12px 28px;
             font-size: 1.1em;
             cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            border-radius: 12px;
+            transition: all 0.25s ease;
         }
 
         nav button:hover,
         nav button.active {
-            color: #fff;
             background-color: #333;
+            color: white;
+            transform: translateY(-2px);
         }
 
+        /* ---------------------- TABS ---------------------- */
         .tab {
             display: none;
-            animation: fadeIn 0.5s ease;
+            animation: fadeIn 0.4s ease;
             width: 100%;
             max-width: 900px;
-            background-color: #222;
+            background-color: #161616;
             padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
             margin-bottom: 60px;
         }
 
@@ -88,102 +87,78 @@
             }
         }
 
+        h2 {
+            font-size: 1.9em;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        /* ---------------------- TABLES ---------------------- */
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            background: #1c1c1c;
+            border-radius: 12px;
+            overflow: hidden;
         }
 
         th,
         td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #444;
-            font-size: 1.1em;
+            padding: 14px 12px;
+            font-size: 1.05em;
+            border-bottom: 1px solid #333;
+            text-align: center;
+            /* ✅ alles in het midden */
         }
 
         th {
-            background-color: #333;
-            color: #fff;
-            font-weight: normal;
+            background-color: #222;
+            cursor: pointer;
+            color: #ddd;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            user-select: none;
+            transition: 0.2s;
+        }
+
+        th:hover {
+            background-color: #2a2a2a;
         }
 
         tr:nth-child(even) {
-            background-color: #333;
+            background-color: #1a1a1a;
         }
 
         .score {
             font-weight: bold;
-            padding: 6px 12px;
+            padding: 7px 14px;
             border-radius: 8px;
-            display: inline-block;
-            text-align: center;
             min-width: 50px;
-            color: white;
+            display: inline-block;
         }
 
         .rood {
-            background-color: #e57373;
-            color: #fff;
+            background-color: #d9534f;
         }
 
         .geel {
-            background-color: #fff176;
+            background-color: #f0ad4e;
             color: #000;
         }
 
         .groen {
-            background-color: #81c784;
-            color: #fff;
+            background-color: #5cb85c;
         }
 
-        /* Graph container */
         .chart-container {
             width: 100%;
             max-width: 900px;
-            height: 400px;
-            margin: 40px auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 12px;
-            background-color: #222;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        canvas {
-            width: 100% !important;
-            height: 100% !important;
-            border-radius: 12px;
-        }
-
-        h2 {
-            font-size: 1.8em;
-            margin-bottom: 20px;
-            color: #fff;
-            font-weight: 600;
-        }
-
-        /* Responsive styles */
-        @media (max-width: 768px) {
-            header {
-                font-size: 2em;
-                padding: 20px;
-            }
-
-            nav button {
-                padding: 12px 20px;
-                font-size: 1em;
-            }
-
-            table th,
-            table td {
-                font-size: 1em;
-            }
-
-            .chart-container {
-                height: 350px;
-            }
+            height: 450px;
+            margin: 20px auto;
+            background-color: #1a1a1a;
+            border-radius: 20px;
+            padding: 25px;
         }
     </style>
 </head>
@@ -198,33 +173,36 @@
         <button class="tablink" onclick="openTab('statistieken')">Statistieken</button>
     </nav>
 
+    <!-- HOME -->
     <div id="home" class="tab" style="display:block;">
         <h2>Alle cijfers</h2>
         <table id="gradeTable">
             <thead>
                 <tr>
-                    <th>Vak</th>
-                    <th>Datum</th>
-                    <th>Cijfer</th>
+                    <th data-col="vak">Vak</th>
+                    <th data-col="datum">Datum</th>
+                    <th data-col="cijfer">Cijfer</th>
                 </tr>
             </thead>
             <tbody></tbody>
         </table>
     </div>
 
+    <!-- GEMIDDELDE -->
     <div id="gemiddelde" class="tab">
         <h2>Gemiddelde per vak</h2>
         <table id="averageTable">
             <thead>
                 <tr>
-                    <th>Vak</th>
-                    <th>Gemiddelde</th>
+                    <th data-col="vak">Vak</th>
+                    <th data-col="gem">Gemiddelde</th>
                 </tr>
             </thead>
             <tbody></tbody>
         </table>
     </div>
 
+    <!-- STATISTIEKEN -->
     <div id="statistieken" class="tab">
         <h2>Grafiek: Gemiddelde per vak</h2>
         <div class="chart-container">
@@ -233,6 +211,7 @@
     </div>
 
     <script>
+
         const cijfers = {
             "Duitse taal": [
                 { datum: "7 nov", cijfer: 10.0 },
@@ -250,16 +229,14 @@
                 { datum: "22 okt", cijfer: 7.0 }
             ],
             "Economie": [
-                { datum: "22 okt", cijfer: 5.7 },
+                { datum: "21 okt", cijfer: 5.7 },
                 { datum: "20 okt", cijfer: 5.0 }
             ],
             "Nederlandse taal": [
                 { datum: "21 okt", cijfer: 6.6 },
                 { datum: "29 sep", cijfer: 7.5 }
             ],
-            "Tekenen": [
-                { datum: "21 okt", cijfer: 7.0 }
-            ],
+
             "Biologie": [
                 { datum: "19 okt", cijfer: 6.8 }
             ],
@@ -272,134 +249,169 @@
             ],
             "Geschiedenis": [
                 { datum: "7 okt", cijfer: 6.9 }
+            ],
+            "Nask": [
+                { datum: "9 okt", cijfer: 6.5 },
+                { datum: "9 okt", cijfer: 6.8 }
             ]
         };
 
-        const maandNamen = {
-            jan: 0, feb: 1, mrt: 2, apr: 3, mei: 4, jun: 5,
-            jul: 6, aug: 7, sep: 8, okt: 9, nov: 10, dec: 11
+        const averages = {
+            "Duitse taal": 6.7,
+            "Muziek": 7.8,
+            "Franse taal": 7.3,
+            "Engelse taal": 7.0,
+            "Economie": 5.5,
+            "Nederlandse taal": 6.9,
+            "Biologie": 6.8,
+            "Aardrijkskunde": 6.3,
+            "Wiskunde": 5.9,
+            "Geschiedenis": 6.9,
+            "Nask": 6.6
         };
 
-        function parseDate(dateString) {
-            const [day, maand] = dateString.split(' ');
-            const maandNum = maandNamen[maand.toLowerCase().slice(0, 3)];
-            return new Date(2025, maandNum, parseInt(day));
+        const maand = { jan: 0, feb: 1, mrt: 2, apr: 3, mei: 4, jun: 5, jul: 6, aug: 7, sep: 8, okt: 9, nov: 10, dec: 11 };
+
+        function parseDate(str) {
+            const [d, m] = str.split(" ");
+            return new Date(2025, maand[m.slice(0, 3)], parseInt(d));
         }
 
-        function getColorClass(score) {
-            if (score < 5.5) return "rood";
-            if (score < 6.0) return "geel";
+        function getColor(s) {
+            if (s < 5.5) return "rood";
+            if (s < 6) return "geel";
             return "groen";
         }
 
-        function renderGrades() {
-            // Collect all grades in one array
-            const allGrades = [];
-            for (let vak in cijfers) {
-                cijfers[vak].forEach(item => {
-                    allGrades.push({ vak: vak, datum: item.datum, cijfer: item.cijfer });
-                });
-            }
+        function openTab(name) {
+            document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
+            document.querySelectorAll(".tablink").forEach(b => b.classList.remove("active"));
+            document.getElementById(name).style.display = "block";
+            document.querySelector(`button[onclick="openTab('${name}')"]`).classList.add("active");
+        }
 
-            // Sort by date (newest to oldest)
-            allGrades.sort((a, b) => parseDate(b.datum) - parseDate(a.datum));
+        /* ---------------- GENERATE TABLES ---------------- */
 
-            // Fill the table
+        function generateGradeTable() {
             const tbody = document.querySelector("#gradeTable tbody");
             tbody.innerHTML = "";
-            allGrades.forEach(item => {
+
+            const all = [];
+
+            for (const vak in cijfers) {
+                cijfers[vak].forEach(e => all.push({ vak, ...e }));
+            }
+
+            all.sort((a, b) => parseDate(b.datum) - parseDate(a.datum));
+
+            all.forEach(item => {
                 tbody.innerHTML += `
                 <tr>
                     <td>${item.vak}</td>
                     <td>${item.datum}</td>
-                    <td><span class="score ${getColorClass(item.cijfer)}">${item.cijfer}</span></td>
-                </tr>`;
+                    <td><span class="score ${getColor(item.cijfer)}">${item.cijfer.toFixed(1)}</span></td>
+                </tr>
+            `;
             });
         }
 
-        const specificAverages = {
-            "Aardrijkskunde": 6.3, "Biologie": 6.8, "Duitse taal": 6.7,
-            "Economie": 5.5, "Engelse taal": 7.0, "Franse taal": 7.3,
-            "Geschiedenis": 6.9, "Muziek": 7.8, "Nederlandse taal": 6.9,
-            "Tekenen": 8.0, "Wiskunde": 5.9
-        };
-
-        function renderAverages() {
+        function generateAverageTable() {
             const tbody = document.querySelector("#averageTable tbody");
             tbody.innerHTML = "";
-            for (let vak in specificAverages) {
-                const avg = specificAverages[vak].toFixed(1); // Round to 1 decimal
+
+            for (const vak in averages) {
+                const avg = averages[vak];
                 tbody.innerHTML += `
                 <tr>
                     <td>${vak}</td>
-                    <td><span class="score ${getColorClass(avg)}">${avg}</span></td>
-                </tr>`;
+                    <td><span class="score ${getColor(avg)}">${avg.toFixed(1)}</span></td>
+                </tr>
+            `;
             }
         }
 
-        function renderChart() {
-            const ctx = document.getElementById('avgChart').getContext('2d');
-            const labels = Object.keys(specificAverages);
-            const averages = labels.map(vak => specificAverages[vak].toFixed(1));
+        /* ---------------- SORTABLE TABLES ---------------- */
 
-            new Chart(ctx, {
-                type: 'bar',
+        function makeSortable(tableId) {
+            const table = document.getElementById(tableId);
+            const headers = table.querySelectorAll("th");
+
+            headers.forEach((th, idx) => {
+                th.addEventListener("click", () => {
+                    const rows = Array.from(table.querySelector("tbody").rows);
+
+                    let sorted;
+
+                    if (tableId === "gradeTable") {
+                        if (idx === 0) {
+                            sorted = rows.sort((a, b) => a.cells[0].innerText.localeCompare(b.cells[0].innerText));
+                        }
+                        if (idx === 1) {
+                            sorted = rows.sort((a, b) => parseDate(b.cells[1].innerText) - parseDate(a.cells[1].innerText));
+                        }
+                        if (idx === 2) {
+                            sorted = rows.sort((a, b) =>
+                                parseFloat(b.cells[2].innerText) - parseFloat(a.cells[2].innerText)
+                            );
+                        }
+                    }
+
+                    if (tableId === "averageTable") {
+                        if (idx === 0) {
+                            sorted = rows.sort((a, b) => a.cells[0].innerText.localeCompare(b.cells[0].innerText));
+                        }
+                        if (idx === 1) {
+                            sorted = rows.sort((a, b) =>
+                                parseFloat(b.cells[1].innerText) - parseFloat(a.cells[1].innerText)
+                            );
+                        }
+                    }
+
+                    table.querySelector("tbody").innerHTML = "";
+                    sorted.forEach(r => table.querySelector("tbody").appendChild(r));
+                });
+            });
+        }
+
+        /* ---------------- CHART ---------------- */
+
+        function createChart() {
+            const labels = Object.keys(averages);
+            const data = labels.map(l => averages[l]);
+
+            new Chart(document.getElementById("avgChart"), {
+                type: "bar",
                 data: {
-                    labels: labels,
+                    labels,
                     datasets: [{
-                        label: 'Gemiddelde per vak',
-                        data: averages,
-                        backgroundColor: averages.map(a => a < 5.5 ? '#e57373' : (a < 6 ? '#fff176' : '#81c784')),
-                        borderColor: averages.map(a => a < 5.5 ? '#b71c1c' : (a < 6 ? '#fbc02d' : '#388e3c')),
-                        borderWidth: 1
+                        label: "Gemiddelde",
+                        data,
+                        backgroundColor: data.map(v =>
+                            v < 5.5 ? "#d9534f" :
+                                v < 6 ? "#f0ad4e" :
+                                    "#5cb85c"
+                        ),
+                        borderRadius: 6
                     }]
                 },
                 options: {
-                    responsive: true,
-                    animation: {
-                        duration: 1000,
-                        easing: 'easeInOutQuart',
-                        onComplete: function () {
-                            const chartInstance = this.chart;
-                            const ctx = chartInstance.ctx;
-                            ctx.textAlign = 'center';
-                            ctx.textBaseline = 'bottom';
-                        }
-                    },
+                    indexAxis: 'y',
+                    animation: false,
                     scales: {
-                        x: {
-                            ticks: {
-                                font: {
-                                    size: 14
-                                },
-                                padding: 15
-                            }
-                        },
-                        y: {
-                            ticks: {
-                                beginAtZero: true,
-                                font: {
-                                    size: 14
-                                },
-                                padding: 15
-                            }
-                        }
+                        x: { beginAtZero: true, max: 10 }
                     }
                 }
             });
         }
 
-        function openTab(tabName) {
-            document.querySelectorAll('.tab').forEach(tab => tab.style.display = 'none');
-            document.querySelectorAll('.tablink').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(tabName).style.display = 'block';
-            document.querySelector(`button[onclick="openTab('${tabName}')"]`).classList.add('active');
-            if (tabName === 'statistieken') renderChart();
-        }
+        /* ---------------- INIT ---------------- */
 
-        // Start rendering
-        renderGrades();
-        renderAverages();
+        generateGradeTable();
+        generateAverageTable();
+        makeSortable("gradeTable");
+        makeSortable("averageTable");
+        createChart();
+
     </script>
 
 </body>
