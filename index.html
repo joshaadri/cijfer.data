@@ -24,7 +24,6 @@
             justify-content: center;
         }
 
-        /* LOGIN CONTAINER */
         .login-container {
             background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
             padding: 50px 40px;
@@ -154,7 +153,6 @@
             display: block;
         }
 
-        /* MAIN APP STYLES */
         .main-app {
             display: none;
             padding: 40px 20px;
@@ -178,17 +176,6 @@
             font-weight: 700;
             text-align: center;
             margin-bottom: 45px;
-            animation: fadeIn 0.8s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
         }
 
         nav {
@@ -197,7 +184,6 @@
             gap: 20px;
             margin-bottom: 40px;
             flex-wrap: wrap;
-            animation: fadeIn 1s ease 0.2s backwards;
         }
 
         nav button {
@@ -236,70 +222,41 @@
             color: #fff;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: #1c1c1c;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        th,
-        td {
-            padding: 14px 12px;
-            font-size: 1.05em;
-            border-bottom: 1px solid #333;
-            text-align: center;
-        }
-
-        th {
-            background-color: #222;
-            cursor: pointer;
-            color: #ddd;
-            text-transform: uppercase;
-            user-select: none;
-        }
-
-        tr:nth-child(even) {
-            background-color: #1a1a1a;
-        }
-
-        .score {
-            font-weight: bold;
-            padding: 7px 14px;
-            border-radius: 8px;
-            min-width: 50px;
-            display: inline-block;
-        }
-
-        .rood {
-            background-color: #d9534f;
-        }
-
-        .geel {
-            background-color: #f0ad4e;
-            color: #000;
-        }
-
-        .groen {
-            background-color: #5cb85c;
-        }
-
-        .chart-container {
-            width: 100%;
-            max-width: 900px;
-            height: 450px;
-            margin: 20px auto;
-            background-color: #1a1a1a;
-            border-radius: 20px;
-            padding: 25px;
-        }
-
         #game iframe {
             width: 100%;
-            height: 600px;
-            border: none;
+            height: 650px;
             border-radius: 15px;
+        }
+
+        /* GAME LIBRARY */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .game-card {
+            background: #1f1f1f;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            transition: 0.25s;
+            border: 1px solid #333;
+            cursor: pointer;
+        }
+
+        .game-card:hover {
+            background: #2c2c2c;
+            transform: translateY(-4px);
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -341,7 +298,7 @@
             <button class="tablink active" onclick="openTab('home')">Cijfers</button>
             <button class="tablink" onclick="openTab('gemiddelde')">Gemiddelde</button>
             <button class="tablink" onclick="openTab('statistieken')">Grafiek</button>
-            <button class="tablink" onclick="openTab('game')">Game</button>
+            <button class="tablink" onclick="openTab('game')">Games</button>
         </nav>
 
         <!-- HOME -->
@@ -381,20 +338,63 @@
             </div>
         </div>
 
-        <!-- GAME TAB -->
+        <!-- GAME TAB (FULL LIBRARY ADDED) -->
         <div id="game" class="tab">
-            <h2>Dino Game</h2>
-            <iframe src="https://chromedino.com/" loading="lazy"></iframe>
+            <h2>Games Library</h2>
+
+            <div class="game-grid">
+
+                <div class="game-card" onclick="loadGame('https://poki.com/en/g/drive-mad')">
+                    <img src="https://img.poki-cdn.com/drive-mad.png">
+                    <h3>Drive Mad</h3>
+                </div>
+
+                <div class="game-card" onclick="loadGame('https://chromedino.com/')">
+                    <img src="https://via.placeholder.com/300x200?text=Dino+Game">
+                    <h3>Dino Game</h3>
+                </div>
+
+                <div class="game-card" onclick="loadGame('https://ubg98.github.io/bitlife/')">
+                    <img src="https://via.placeholder.com/300x200?text=Bitlife">
+                    <h3>Bitlife</h3>
+                </div>
+
+                <div class="game-card" onclick="loadGame('https://ubg98.github.io/slope/')">
+                    <img src="https://via.placeholder.com/300x200?text=Slope">
+                    <h3>Slope</h3>
+                </div>
+
+                <div class="game-card" onclick="loadGame('https://ubg365.github.io/retrobowl/')">
+                    <img src="https://via.placeholder.com/300x200?text=Retro+Bowl">
+                    <h3>Retro Bowl</h3>
+                </div>
+
+                <div class="game-card" onclick="loadGame('https://1v1.lol')">
+                    <img src="https://via.placeholder.com/300x200?text=1v1.lol">
+                    <h3>1v1.lol</h3>
+                </div>
+
+                <div class="game-card" onclick="loadGame('https://motox3m-game.github.io/motox3m/')">
+                    <img src="https://via.placeholder.com/300x200?text=Moto+X3M">
+                    <h3>Moto X3M</h3>
+                </div>
+
+                <div class="game-card" onclick="loadGame('https://run3.io/')">
+                    <img src="https://via.placeholder.com/300x200?text=Run+3">
+                    <h3>Run 3</h3>
+                </div>
+
+            </div>
+
+            <iframe id="gameFrame"></iframe>
         </div>
-      <div id="game" class="tab"> <h2>Dino Game</h2> <iframe src="https://chromedino.com/" loading="lazy"></iframe>
+
     </div>
 
     <script>
-        // LOGIN CREDENTIALS
         const VALID_USER = "josha";
         const VALID_PASS = "Joshasmc1234!";
 
-        // LOGIN LOGIC
         document.getElementById('loginForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
@@ -405,8 +405,6 @@
             if (username === VALID_USER && password === VALID_PASS) {
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('mainApp').classList.add('show');
-
-                // Initialize the app
                 generateGradeTable();
                 generateAverageTable();
                 makeSortable("gradeTable");
@@ -414,13 +412,17 @@
                 createChart();
             } else {
                 errorMsg.classList.add('show');
-                setTimeout(() => {
-                    errorMsg.classList.remove('show');
-                }, 3000);
+                setTimeout(() => errorMsg.classList.remove('show'), 3000);
             }
         });
 
-        // GRADES DATA
+        // GAME LOADER
+        function loadGame(url) {
+            document.getElementById("gameFrame").src = url;
+            openTab('game');
+        }
+
+        // --- The rest of your original scripts stay unchanged (generate table, charts, etc.) ---
         const cijfers = {
             "Duitse taal": [
                 { datum: "7 nov", cijfer: 10.0 },
@@ -502,74 +504,50 @@
         function generateGradeTable() {
             const tbody = document.querySelector("#gradeTable tbody");
             tbody.innerHTML = "";
-
             const all = [];
             for (const vak in cijfers) {
                 cijfers[vak].forEach(e => all.push({ vak, ...e }));
             }
-
             all.sort((a, b) => parseDate(b.datum) - parseDate(a.datum));
-
             all.forEach(item => {
                 tbody.innerHTML += `
                 <tr>
                     <td>${item.vak}</td>
                     <td>${item.datum}</td>
                     <td><span class="score ${getColor(item.cijfer)}">${item.cijfer.toFixed(1)}</span></td>
-                </tr>
-            `;
+                </tr>`;
             });
         }
 
         function generateAverageTable() {
             const tbody = document.querySelector("#averageTable tbody");
             tbody.innerHTML = "";
-
             for (const vak in averages) {
                 const avg = averages[vak];
                 tbody.innerHTML += `
                 <tr>
                     <td>${vak}</td>
                     <td><span class="score ${getColor(avg)}">${avg.toFixed(1)}</span></td>
-                </tr>
-            `;
+                </tr>`;
             }
         }
 
         function makeSortable(tableId) {
             const table = document.getElementById(tableId);
             const headers = table.querySelectorAll("th");
-
             headers.forEach((th, idx) => {
                 th.addEventListener("click", () => {
                     const rows = Array.from(table.querySelector("tbody").rows);
                     let sorted;
-
                     if (tableId === "gradeTable") {
-                        if (idx === 0) {
-                            sorted = rows.sort((a, b) => a.cells[0].innerText.localeCompare(b.cells[0].innerText));
-                        }
-                        if (idx === 1) {
-                            sorted = rows.sort((a, b) => parseDate(b.cells[1].innerText) - parseDate(a.cells[1].innerText));
-                        }
-                        if (idx === 2) {
-                            sorted = rows.sort((a, b) =>
-                                parseFloat(b.cells[2].innerText) - parseFloat(a.cells[2].innerText)
-                            );
-                        }
+                        if (idx === 0) sorted = rows.sort((a, b) => a.cells[0].innerText.localeCompare(b.cells[0].innerText));
+                        if (idx === 1) sorted = rows.sort((a, b) => parseDate(b.cells[1].innerText) - parseDate(a.cells[1].innerText));
+                        if (idx === 2) sorted = rows.sort((a, b) => parseFloat(b.cells[2].innerText) - parseFloat(a.cells[2].innerText));
                     }
-
                     if (tableId === "averageTable") {
-                        if (idx === 0) {
-                            sorted = rows.sort((a, b) => a.cells[0].innerText.localeCompare(b.cells[0].innerText));
-                        }
-                        if (idx === 1) {
-                            sorted = rows.sort((a, b) =>
-                                parseFloat(b.cells[1].innerText) - parseFloat(a.cells[1].innerText)
-                            );
-                        }
+                        if (idx === 0) sorted = rows.sort((a, b) => a.cells[0].innerText.localeCompare(b.cells[0].innerText));
+                        if (idx === 1) sorted = rows.sort((a, b) => parseFloat(b.cells[1].innerText) - parseFloat(a.cells[1].innerText));
                     }
-
                     table.querySelector("tbody").innerHTML = "";
                     sorted.forEach(r => table.querySelector("tbody").appendChild(r));
                 });
@@ -579,7 +557,6 @@
         function createChart() {
             const labels = Object.keys(averages);
             const data = labels.map(l => averages[l]);
-
             new Chart(document.getElementById("avgChart"), {
                 type: "bar",
                 data: {
@@ -588,9 +565,7 @@
                         label: "Gemiddelde",
                         data,
                         backgroundColor: data.map(v =>
-                            v < 5.5 ? "#d9534f" :
-                                v < 6 ? "#f0ad4e" :
-                                    "#5cb85c"
+                            v < 5.5 ? "#d9534f" : v < 6 ? "#f0ad4e" : "#5cb85c"
                         ),
                         borderRadius: 6
                     }]
@@ -598,15 +573,11 @@
                 options: {
                     indexAxis: 'y',
                     animation: false,
-                    scales: {
-                        x: { beginAtZero: true, max: 10 }
-                    }
+                    scales: { x: { beginAtZero: true, max: 10 } }
                 }
             });
         }
     </script>
 
 </body>
-
 </html>
-
