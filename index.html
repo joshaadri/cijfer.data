@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Somtoday</title>
     <link rel="icon" type="image/png" href="som.png">
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
@@ -343,7 +342,9 @@
             <button class="tablink active" onclick="openTab('home')">Cijfers</button>
             <button class="tablink" onclick="openTab('gemiddelde')">Gemiddelde</button>
             <button class="tablink" onclick="openTab('statistieken')">Grafiek</button>
-            <button class="tablink" onclick="openTab('game')">Game</button>
+
+            <!-- HIDDEN GAME TAB BUTTON -->
+            <button class="tablink" id="gameBtn" onclick="openTab('game')" style="display:none;">Game</button>
         </nav>
 
         <!-- HOME -->
@@ -385,9 +386,14 @@
 
         <!-- GAME TAB -->
         <div id="game" class="tab">
-            <h2>Dino Game</h2>
+            <h2>Pong</h2>
+            <canvas id="pongCanvas" width="600" height="400"
+                style="background:#000; border-radius:10px; width:100%; max-width:600px;"></canvas>
+
+            <h2 style="margin-top:30px;">Dino Game</h2>
             <iframe src="https://chromedino.com/" loading="lazy"></iframe>
         </div>
+
     </div>
 
     <script>
@@ -606,6 +612,99 @@
                 }
             });
         }
+
+        /* ------------------------------------------------------ */
+        /* SECRET UNLOCK: TYPE "frikandelbroodje" TO SHOW GAME TAB */
+        /* ------------------------------------------------------ */
+        let typed = "";
+        const secret = "frikandelbroodje";
+
+        document.addEventListener("keydown", (e) => {
+            typed += e.key.toLowerCase();
+            if (typed.length > secret.length)
+                typed = typed.slice(-secret.length);
+
+            if (typed.includes(secret)) {
+                document.getElementById("gameBtn").style.display = "inline-block";
+            }
+        });
+
+        /* ------------------- */
+        /* PONG GAME CODE HERE */
+        /* ------------------- */
+
+        const pongCanvas = document.getElementById("pongCanvas");
+        const ctx = pongCanvas.getContext("2d");
+
+        let paddleHeight = 70;
+        let paddleWidth = 10;
+        let playerY = pongCanvas.height / 2 - paddleHeight / 2;
+        let botY = pongCanvas.height / 2 - paddleHeight / 2;
+
+        let ballX = pongCanvas.width / 2;
+        let ballY = pongCanvas.height / 2;
+        let ballSpeedX = 4;
+        let ballSpeedY = 3;
+        let ballSize = 8;
+
+        document.addEventListener("mousemove", (e) => {
+            const rect = pongCanvas.getBoundingClientRect();
+            playerY = e.clientY - rect.top - paddleHeight / 2;
+        });
+
+        function rect(x, y, w, h, c) {
+            ctx.fillStyle = c;
+            ctx.fillRect(x, y, w, h);
+        }
+
+        function circle(x, y, r, c) {
+            ctx.fillStyle = c;
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function updatePong() {
+            ballX += ballSpeedX;
+            ballY += ballSpeedY;
+
+            if (ballY < ballSize || ballY > pongCanvas.height - ballSize)
+                ballSpeedY *= -1;
+
+            if (botY + paddleHeight / 2 < ballY) botY += 3;
+            else botY -= 3;
+
+            if (ballX < paddleWidth + ballSize) {
+                if (ballY > playerY && ballY < playerY + paddleHeight)
+                    ballSpeedX *= -1;
+            }
+
+            if (ballX > pongCanvas.width - paddleWidth - ballSize) {
+                if (ballY > botY && ballY < botY + paddleHeight)
+                    ballSpeedX *= -1;
+            }
+
+            if (ballX < 0 || ballX > pongCanvas.width) {
+                ballX = pongCanvas.width / 2;
+                ballY = pongCanvas.height / 2;
+                ballSpeedX *= -1;
+            }
+        }
+
+        function drawPong() {
+            rect(0, 0, pongCanvas.width, pongCanvas.height, "#000");
+            rect(10, playerY, paddleWidth, paddleHeight, "#fff");
+            rect(pongCanvas.width - 20, botY, paddleWidth, paddleHeight, "#fff");
+            circle(ballX, ballY, ballSize, "#fff");
+        }
+
+        function pongLoop() {
+            updatePong();
+            drawPong();
+            requestAnimationFrame(pongLoop);
+        }
+
+        pongLoop();
     </script>
 
 </body>
